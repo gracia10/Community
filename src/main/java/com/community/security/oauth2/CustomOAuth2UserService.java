@@ -2,6 +2,8 @@ package com.community.security.oauth2;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -26,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
+	private final HttpSession httpSession;
+
     private final UserRepository userRepository;
 	
 	@Override
@@ -44,7 +48,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 	private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
 		
 		String provider = oAuth2UserRequest.getClientRegistration().getRegistrationId();
-		
 		OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, oAuth2User.getAttributes());
 		
 		if(StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
@@ -57,14 +60,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 		if(userOptional.isPresent()) {
 			user = userOptional.get();
 			if(!user.getProvider().equals(AuthProvider.valueOf(provider))) {
-				throw new OAuth2AuthenticationProcessingException(user.getProvider() + " 계정이 있습니다." + user.getProvider() +" 로그인을 이용해 주세요.");
+				throw new OAuth2AuthenticationProcessingException(user.getProvider()+" 계정이 있습니다."+user.getProvider()+" 로그인을 이용해 주세요.");
 			}
 			user = updateExistingUser(user);
 		} else {
 			user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
 		}
 		
-        return UserPrincipal.create(user, oAuth2User.getAttributes());
+		UserPrincipal principal = UserPrincipal.create(user, oAuth2User.getAttributes());
+		httpSession.setAttribute("user", principal);
+		
+        return principal;
 	}
 	
 	private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {

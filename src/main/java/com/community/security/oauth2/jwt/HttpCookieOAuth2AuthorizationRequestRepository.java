@@ -1,4 +1,4 @@
-package com.community.security.oauth2;
+package com.community.security.oauth2.jwt;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

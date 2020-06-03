@@ -1,27 +1,33 @@
 package com.community.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 import com.community.security.oauth2.CustomOAuth2UserService;
-import com.community.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.community.security.oauth2.userDetails.CustomUserDetailsService;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	
-	@Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
-	
+    private final CustomOAuth2UserService customOAuth2UserService;
+    
+    private final CustomUserDetailsService customUserDetailsService;
+
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder
+                .userDetailsService(customUserDetailsService);
+    }
+    
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring()
@@ -35,9 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http
 		.cors()
 			.and()
-		.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
+//		.sessionManagement()
+//			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//			.and()
 		.csrf()
 			.disable()
 		.formLogin()
@@ -57,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .oauth2Login()
 	        .authorizationEndpoint()
 	        	.baseUri("/oauth2/authorize")
-		        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+//		        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
 		        .and()
 	        .redirectionEndpoint()
 		        .baseUri("/oauth2/callback/*")
@@ -70,9 +76,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        ;
 	}
 	
-	private AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
-    }
+//	private AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieAuthorizationRequestRepository() {
+//        return new HttpCookieOAuth2AuthorizationRequestRepository();
+//    }
 	
 }
 	
