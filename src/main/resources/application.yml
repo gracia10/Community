@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: oauth
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+---
+spring:
+  profiles: local_mysql
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/testdb?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 5555
+logging:
+  level:
+    root: info
+server:
+  port: 8088

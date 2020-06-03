@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="false">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+ 
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+    
+<!--     
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+ -->
+    <logger name="org.springframework" level="WARN"/>
+	<logger name="sun.rmi" level="ERROR"/>
+	<logger name="ConditionEvaluationReportLoggingListener" level="ERROR"/>
+	<logger name="org.apache.tomcat.util.compat" level="OFF"/>
+	
+    <root level="#logback.loglevel#">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
