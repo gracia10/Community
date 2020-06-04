@@ -34,9 +34,6 @@ public class User extends BaseTimeEntity implements Serializable{
 	@Column(name = "user_nm",nullable = false)
 	private String name;
 	
-	@Column(name = "user_status", nullable = false)
-	private boolean status;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_auth", nullable = false)
 	private Role auth;
@@ -44,6 +41,10 @@ public class User extends BaseTimeEntity implements Serializable{
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_platform", nullable = false)
 	private AuthProvider provider;
+	
+	@JsonIgnore
+	@Column(name = "user_status", nullable = false)
+	private boolean status;
 	
 	@JsonIgnore
 	private LocalDateTime lastlogin;

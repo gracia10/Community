@@ -12,19 +12,18 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.community.model.domain.User;
 
-import lombok.Getter;
-
-@Getter
 public class UserPrincipal implements OAuth2User,UserDetails{
 
 	private static final long serialVersionUID = 1909732448083189765L;
 	
 	private String email;
     private String name;
+    private boolean enabled;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 	
-	public UserPrincipal(String email, String name, Collection<? extends GrantedAuthority> authorities) {
+	
+	public UserPrincipal(String email, String name,boolean enabled, Collection<? extends GrantedAuthority> authorities) {
         this.email = email;
         this.name = name;
         this.authorities = authorities;
@@ -36,6 +35,7 @@ public class UserPrincipal implements OAuth2User,UserDetails{
         return new UserPrincipal(
                 user.getEmail(),
                 user.getName(),
+                user.isStatus(),
                 authorities
         );
     }
@@ -59,15 +59,15 @@ public class UserPrincipal implements OAuth2User,UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
 	}
+	
+	public String getEmail() {
+		return email;
+	}
 
+	// user's id
 	@Override
 	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public String getPassword() {
-		return "none";
+		return email;
 	}
 	
 	@Override
@@ -76,23 +76,28 @@ public class UserPrincipal implements OAuth2User,UserDetails{
 	}
 
 	@Override
+	public String getPassword() {
+		return "none";
+	}
+	
+	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return enabled;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return enabled;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return enabled;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return enabled;
 	}
 
 }

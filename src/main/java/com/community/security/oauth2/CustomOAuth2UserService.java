@@ -18,9 +18,8 @@ import com.community.model.AuthProvider;
 import com.community.model.Role;
 import com.community.model.domain.User;
 import com.community.repository.UserRepository;
+import com.community.security.oauth2.userAttribute.OAuthAttributes;
 import com.community.security.oauth2.userDetails.UserPrincipal;
-import com.community.security.oauth2.userInfo.OAuth2UserInfo;
-import com.community.security.oauth2.userInfo.OAuth2UserInfoFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,39 +46,39 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 	
 	private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
 		
-		String provider = oAuth2UserRequest.getClientRegistration().getRegistrationId();
-		OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, oAuth2User.getAttributes());
+		String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
+		OAuthAttributes oAuthAttributes = OAuthAttributes.of(registrationId, oAuth2User.getAttributes());
 		
-		if(StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+		if(StringUtils.isEmpty(oAuthAttributes.getEmail())) {
 			throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
 		}
 		
-		Optional<User> userOptional = userRepository.findById(oAuth2UserInfo.getEmail());
+		Optional<User> userOptional = userRepository.findById(oAuthAttributes.getEmail());
 		
 		User user;
 		if(userOptional.isPresent()) {
 			user = userOptional.get();
-			if(!user.getProvider().equals(AuthProvider.valueOf(provider))) {
-				throw new OAuth2AuthenticationProcessingException(user.getProvider()+" 계정이 있습니다."+user.getProvider()+" 로그인을 이용해 주세요.");
+			if(!user.getProvider().equals(AuthProvider.valueOf(registrationId))) {
+				throw new OAuth2AuthenticationProcessingException(user.getProvider()+" 계정이 있습니다. "+user.getProvider()+" 로그인을 이용해 주세요.");
 			}
 			user = updateExistingUser(user);
 		} else {
-			user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+			user = registerNewUser(registrationId, oAuthAttributes);
 		}
 		
-		UserPrincipal principal = UserPrincipal.create(user, oAuth2User.getAttributes());
+		UserPrincipal principal = UserPrincipal.create(user, oAuthAttributes.getAttributes());
 		httpSession.setAttribute("user", principal);
 		
         return principal;
 	}
 	
-	private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+	private User registerNewUser(String registrationId, OAuthAttributes oAuthAttributes) {
 		User user = User.builder()
-					.email(oAuth2UserInfo.getEmail())
-					.name(oAuth2UserInfo.getName())
+					.email(oAuthAttributes.getEmail())
+					.name(oAuthAttributes.getName())
 					.status(true)
 					.auth(Role.USER)
-					.provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
+					.provider(AuthProvider.valueOf(registrationId))
 					.build();
         return userRepository.save(user);
     }
