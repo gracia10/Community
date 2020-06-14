@@ -1,9 +1,9 @@
-package com.community.security.oauth2.userDetails;
+package com.community.security;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,27 +12,31 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.community.model.domain.User;
 
-public class UserPrincipal implements OAuth2User,UserDetails{
+public class CustomUserDetails implements OAuth2User,UserDetails{
 
 	private static final long serialVersionUID = 1909732448083189765L;
 	
 	private String email;
     private String name;
-    private boolean enabled;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
+	private boolean enabled;
 	
 	
-	public UserPrincipal(String email, String name,boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+	public CustomUserDetails(String email, String name,boolean enabled, Collection<? extends GrantedAuthority> authorities) {
         this.email = email;
         this.name = name;
+        this.enabled = enabled;
         this.authorities = authorities;
     }
 	
-	public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getAuth().getRole()));
+	public static CustomUserDetails create(User user) {
+        List<GrantedAuthority> authorities = user.getAuthorities()
+        									.stream()
+        									.map(auth -> new SimpleGrantedAuthority(auth.getName().name()))
+        									.collect(Collectors.toList());
 
-        return new UserPrincipal(
+        return new CustomUserDetails(
                 user.getEmail(),
                 user.getName(),
                 user.isStatus(),
@@ -40,8 +44,8 @@ public class UserPrincipal implements OAuth2User,UserDetails{
         );
     }
 	
-	public static UserPrincipal create(User user, Map<String, Object> attributes) {
-		UserPrincipal userPrincipal = UserPrincipal.create(user);
+	public static CustomUserDetails create(User user, Map<String, Object> attributes) {
+		CustomUserDetails userPrincipal = CustomUserDetails.create(user);
 		userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }

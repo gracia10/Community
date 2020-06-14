@@ -1,4 +1,4 @@
-package com.community.security.oauth2.jwt;
+package com.community.security.oauth2;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +27,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
 	@Override
 	public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request,HttpServletResponse response) {
-		
 		if (authorizationRequest == null) {
-			removeAuthorizationRequestCookies(request,response);
+			removeAuthorizationRequestCookies(request, response);
             return;
         }
 

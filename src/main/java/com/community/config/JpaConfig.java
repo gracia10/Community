@@ -17,11 +17,5 @@ public class JpaConfig {
 		DataSource ds = DataSourceBuilder.create().build();
 		return ds;
 	}
-
-	@Bean
-	public String checkBean(DataSource userDataSource) {
-		System.out.println(userDataSource.toString());
-		return "~~";
-	}
 	
 }

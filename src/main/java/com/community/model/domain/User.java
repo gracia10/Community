@@ -2,16 +2,21 @@ package com.community.model.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.community.model.AuthProvider;
-import com.community.model.Role;
+import com.community.model.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
@@ -34,9 +39,6 @@ public class User extends BaseTimeEntity implements Serializable{
 	@Column(name = "user_nm",nullable = false)
 	private String name;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "user_auth", nullable = false)
-	private Role auth;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_platform", nullable = false)
@@ -49,16 +51,20 @@ public class User extends BaseTimeEntity implements Serializable{
 	@JsonIgnore
 	private LocalDateTime lastlogin;
 	
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "authority_id")
+	private Set<Authority> authorities = new HashSet<>();
+	
 	public void update() {
 		this.lastlogin = LocalDateTime.now();
 	}
 	
 	@Builder
-	public User(String email,String name, boolean status, Role auth, AuthProvider provider) {
+	public User(String email,String name, boolean status, Set<Authority> authorities, AuthProvider provider) {
 		this.email = email;
 		this.name = name;
 		this.status = status;
-		this.auth = auth;
+		this.authorities = authorities;
 		this.provider = provider;
 	}
 

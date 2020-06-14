@@ -1,4 +1,4 @@
-package com.community.model.domain;
+package com.community.model;
 
 import java.time.LocalDateTime;
 

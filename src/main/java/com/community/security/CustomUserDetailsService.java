@@ -1,4 +1,4 @@
-package com.community.security.oauth2.userDetails;
+package com.community.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService{
                         new UsernameNotFoundException("User not found with email : " + email)
         );
 
-        return UserPrincipal.create(user);
+        return CustomUserDetails.create(user);
 	}
 
 }

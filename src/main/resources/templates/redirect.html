@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+   <title>인증 토큰 내장 저장소 저장</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+   	<h1>인증 토큰 내장 저장소 저장</h1>
+   
+   	<a href="/user/me">내 페이지</a>
+
+<script>
+	window.onload=function() {
+		
+	    function getUrlParameter(name) {
+	        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+	        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+	        var results = regex.exec(this.location.search);
+	        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	    };
+		
+	    const token = getUrlParameter('token');
+	    
+	    if(token) {
+            localStorage.setItem('accessToken', token);
+            request();
+	    }
+	}
+
+</script>
+<script>
+
+	function request(){
+		
+		fetch("/user/me", {
+			method: "GET",
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+	        }
+		})
+		.then(response => response.json())
+		.then(data => console.log(data));
+		
+	};
+	
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.community.security.oauth2.userAttribute;
+package com.community.security.oauth2;
 
 import java.util.Map;
 

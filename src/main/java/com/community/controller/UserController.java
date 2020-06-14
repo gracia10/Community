@@ -3,15 +3,14 @@ package com.community.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.community.model.domain.User;
 import com.community.repository.UserRepository;
-import com.community.security.oauth2.userDetails.UserPrincipal;
+import com.community.security.CustomUserDetails;
 
 @RestController
 public class UserController {
@@ -20,9 +19,8 @@ public class UserController {
     private UserRepository userRepository;
 	
 	@GetMapping("/user/me")
-    public ResponseEntity<User> getUser(@AuthenticationPrincipal UserPrincipal principal) {
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	@PreAuthorize("hasRole('USER')")
+    public ResponseEntity<User> getUser(@AuthenticationPrincipal CustomUserDetails principal) {
 		
         return userRepository.findById(principal.getEmail())
                 .map(response -> ResponseEntity.ok().body(response))
