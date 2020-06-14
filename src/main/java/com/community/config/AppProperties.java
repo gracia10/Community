@@ -1,4 +1,4 @@
-package com.community.security.jwt;
+package com.community.config;
 
 import java.util.ArrayList;
 import java.util.List;

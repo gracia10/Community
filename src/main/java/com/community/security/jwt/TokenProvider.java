@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.community.config.AppProperties;
 import com.community.security.CustomUserDetails;
 
 import io.jsonwebtoken.Claims;

@@ -1,9 +1,8 @@
 package com.community.security;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,31 +15,26 @@ public class CustomUserDetails implements OAuth2User,UserDetails{
 
 	private static final long serialVersionUID = 1909732448083189765L;
 	
-	private String email;
+	private String id;
     private String name;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 	private boolean enabled;
 	
 	
-	public CustomUserDetails(String email, String name,boolean enabled, Collection<? extends GrantedAuthority> authorities) {
-        this.email = email;
+	public CustomUserDetails(String id, String name,boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
         this.name = name;
         this.enabled = enabled;
         this.authorities = authorities;
     }
 	
 	public static CustomUserDetails create(User user) {
-        List<GrantedAuthority> authorities = user.getAuthorities()
-        									.stream()
-        									.map(auth -> new SimpleGrantedAuthority(auth.getName().name()))
-        									.collect(Collectors.toList());
-
         return new CustomUserDetails(
-                user.getEmail(),
+                user.getId(),
                 user.getName(),
                 user.isStatus(),
-                authorities
+                Collections.singletonList(new SimpleGrantedAuthority(user.getAuthorities().name()))
         );
     }
 	
@@ -65,13 +59,13 @@ public class CustomUserDetails implements OAuth2User,UserDetails{
 	}
 	
 	public String getEmail() {
-		return email;
+		return id;
 	}
 
 	// user's id
 	@Override
 	public String getName() {
-		return email;
+		return id;
 	}
 	
 	@Override

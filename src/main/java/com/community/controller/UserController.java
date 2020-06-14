@@ -19,11 +19,17 @@ public class UserController {
     private UserRepository userRepository;
 	
 	@GetMapping("/user/me")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER, ADMIN')")
     public ResponseEntity<User> getUser(@AuthenticationPrincipal CustomUserDetails principal) {
 		
         return userRepository.findById(principal.getEmail())
                 .map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+	
+	@GetMapping("/admin")
+	@PreAuthorize("hasRole('ADMIN')")
+    public String dispAdmin() {
+        return "hello world it's admin";
     }
 }

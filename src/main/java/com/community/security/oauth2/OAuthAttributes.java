@@ -38,8 +38,8 @@ public class OAuthAttributes {
 
 	private static OAuthAttributes ofGoogle(Map<String, Object> attributes) {
 		return OAuthAttributes.builder()
-				.name((String) attributes.get("name"))
 				.email((String) attributes.get("email"))
+				.name((String) attributes.get("name"))
 				.attributes(attributes)
 				.nameAttributeKey("sub")
 				.build();
@@ -49,8 +49,8 @@ public class OAuthAttributes {
 		Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
 		return OAuthAttributes.builder()
-				.name((String) response.get("name"))
 				.email((String) response.get("email"))
+				.name((String) response.get("name"))
 				.attributes(response)
 				.nameAttributeKey("response")
 				.build();

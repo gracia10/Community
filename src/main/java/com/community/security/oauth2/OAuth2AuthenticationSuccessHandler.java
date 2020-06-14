@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.community.config.AppProperties;
 import com.community.exception.BadRequestException;
-import com.community.security.jwt.AppProperties;
 import com.community.security.jwt.TokenProvider;
 import com.community.util.CookieUtils;
 

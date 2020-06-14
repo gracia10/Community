@@ -1,6 +1,5 @@
 package com.community.security.oauth2;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -12,13 +11,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.community.exception.BadRequestException;
 import com.community.exception.OAuth2AuthenticationProcessingException;
 import com.community.model.AuthProvider;
-import com.community.model.AuthorityName;
-import com.community.model.domain.Authority;
+import com.community.model.Authority;
 import com.community.model.domain.User;
-import com.community.repository.AuthorityRepository;
 import com.community.repository.UserRepository;
 import com.community.security.CustomUserDetails;
 
@@ -30,8 +26,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
     private final UserRepository userRepository;
     
-    private final AuthorityRepository authorityRepository;
-	
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
@@ -66,19 +60,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 		} else {
 			user = registerNewUser(registrationId, oAuthAttributes);
 		}
-		
         return CustomUserDetails.create(user, oAuthAttributes.getAttributes());
 	}
 	
 	private User registerNewUser(String registrationId, OAuthAttributes oAuthAttributes) {
 		
-		Authority authority = authorityRepository.findByName(AuthorityName.ROLE_USER).orElseThrow(() -> new BadRequestException("롤 없음"));
-		
 		User user = User.builder()
-					.email(oAuthAttributes.getEmail())
+					.id(oAuthAttributes.getEmail())
 					.name(oAuthAttributes.getName())
 					.status(true)
-					.authorities(Collections.singleton(authority))
+					.authorities(Authority.ROLE_USER)
 					.provider(AuthProvider.valueOf(registrationId))
 					.build();
         return userRepository.save(user);

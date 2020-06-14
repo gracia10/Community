@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.community.security.jwt.AppProperties;
+import com.community.config.AppProperties;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppProperties.class)
