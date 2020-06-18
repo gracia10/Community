@@ -8,3 +8,4 @@ OAuth2 - Social login
 
 ++
 JWT - loaclstrorage -> cookie
+Mail validation check
