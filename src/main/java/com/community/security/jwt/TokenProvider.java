@@ -50,6 +50,7 @@ public class TokenProvider {
 	}
 	
     public String createToken(Map<String, Object> claims){
+    	
     	Date exp = new Date((Long)claims.get(AuthConstants.CLAIM_EXPIRATION));
     	claims.remove(AuthConstants.CLAIM_EXPIRATION);
         String token = Jwts.builder()
@@ -117,7 +118,7 @@ public class TokenProvider {
     
 	public void setIdBlackList(String jti,long time) {
         redisTemplate.opsForValue().set(jti, "");
-        redisTemplate.expire(jti, time, TimeUnit.MILLISECONDS);
+        redisTemplate.expire(jti, time, TimeUnit.SECONDS);
 	}
 	
     public boolean hasKeyFromRedis(String jti) {

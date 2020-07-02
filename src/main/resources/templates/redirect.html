@@ -34,7 +34,7 @@
 	}
 
 	function valid(){
-		var now = new Date().getTime();
+		var now = new Date().getTime()/1000;
 		var exp = parseJwt(localStorage.getItem('accessToken')).exp;
 		var check =  exp > now;
 		result.innerHTML = "now: "+now+", exp: "+exp+", result: "+ check;

@@ -72,7 +72,11 @@ public class UserController {
 		token.forEach(e -> {
 			if(StringUtils.hasText(e)) {
 				Map<String,Object> claims = tokenProvider.getClaimsFromDecodToken(e);
-				tokenProvider.setIdBlackList(claims.get("jti").toString(), Long.parseLong(claims.get("exp").toString()));
+				
+				long restTime = Long.valueOf(claims.get("exp").toString()) - System.currentTimeMillis()/1000;
+				if(restTime>0) {
+					tokenProvider.setIdBlackList(claims.get("jti").toString(),restTime);
+				}
 		    }
 		});
 		
@@ -102,7 +106,10 @@ public class UserController {
 				token.forEach(e -> {
 					if(StringUtils.hasText(e)) {
 						Map<String, Object> claims = tokenProvider.getClaimsFromDecodToken(e);
-						tokenProvider.setIdBlackList(claims.get("jti").toString(), Long.parseLong(claims.get("exp").toString()));
+						long restTime = Long.valueOf(claims.get("exp").toString()) - System.currentTimeMillis()/1000;
+						if(restTime>0) {
+							tokenProvider.setIdBlackList(claims.get("jti").toString(),restTime);
+						}
 				    }
 				});
 				
