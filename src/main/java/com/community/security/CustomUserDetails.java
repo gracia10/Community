@@ -16,15 +16,17 @@ public class CustomUserDetails implements OAuth2User,UserDetails{
 	private static final long serialVersionUID = 1909732448083189765L;
 	
 	private String id;
-    private String name;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 	private boolean enabled;
 	
-	
-	public CustomUserDetails(String id, String name,boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+	public CustomUserDetails(String id, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.name = name;
+        this.authorities = authorities;
+    }
+	
+	public CustomUserDetails(String id, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
         this.enabled = enabled;
         this.authorities = authorities;
     }
@@ -32,7 +34,6 @@ public class CustomUserDetails implements OAuth2User,UserDetails{
 	public static CustomUserDetails create(User user) {
         return new CustomUserDetails(
                 user.getId(),
-                user.getName(),
                 user.isStatus(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getAuthorities().name()))
         );
@@ -58,10 +59,6 @@ public class CustomUserDetails implements OAuth2User,UserDetails{
 		return authorities;
 	}
 	
-	public String getEmail() {
-		return id;
-	}
-
 	// user's id
 	@Override
 	public String getName() {
@@ -70,9 +67,9 @@ public class CustomUserDetails implements OAuth2User,UserDetails{
 	
 	@Override
 	public String getUsername() {
-		return name;
+		return id;
 	}
-
+	
 	@Override
 	public String getPassword() {
 		return "none";

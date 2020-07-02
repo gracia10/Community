@@ -1,4 +1,4 @@
-package com.community.util;
+package com.community.common;
 
 import java.util.Base64;
 import java.util.Optional;
@@ -7,6 +7,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.util.SerializationUtils;
 
 
@@ -25,13 +26,24 @@ public class CookieUtils {
 
         return Optional.empty();
     }
-
+	
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
+    }
+    
+    public static void addRefreshCookie(HttpServletResponse response,String value, long maxAge) {
+    	ResponseCookie cookie = ResponseCookie.from(AuthConstants.REFESH_COOKIE_NAME, value)
+    			.domain("localhost")
+    			.httpOnly(true)
+    			.path("/auth")
+    			.maxAge(maxAge)
+    			.sameSite("Strict")
+    			.build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {

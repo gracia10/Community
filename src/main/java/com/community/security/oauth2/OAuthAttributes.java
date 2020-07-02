@@ -2,8 +2,8 @@ package com.community.security.oauth2;
 
 import java.util.Map;
 
+import com.community.common.AuthProvider;
 import com.community.exception.OAuth2AuthenticationProcessingException;
-import com.community.model.AuthProvider;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -14,7 +14,7 @@
     <logger name="org.springframework" level="WARN"/>
 	<logger name="sun.rmi" level="ERROR"/>
 	<logger name="ConditionEvaluationReportLoggingListener" level="ERROR"/>
-	<logger name="org.apache.tomcat.util.compat" level="OFF"/>
+	<logger name="org.apache.tomcat" level="OFF"/>
 	
     <root level="#logback.loglevel#">
         <appender-ref ref="CONSOLE"/>

@@ -10,8 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.community.model.AuthProvider;
-import com.community.model.Authority;
+import com.community.common.AuthProvider;
+import com.community.common.Authority;
 import com.community.model.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,14 +35,13 @@ public class User extends BaseTimeEntity implements Serializable{
 	@Column(name = "user_nm",nullable = false)
 	private String name;
 	
-	@JsonIgnore
-	@Column(name = "user_status", nullable = false)
-	private boolean status;
-	
-	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_auth", nullable = false)
 	private Authority authorities;
+	
+	@JsonIgnore
+	@Column(name = "user_status", nullable = false)
+	private boolean status;
 
 	@JsonIgnore
 	@Enumerated(EnumType.STRING)

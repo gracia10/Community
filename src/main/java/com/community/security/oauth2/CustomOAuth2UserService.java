@@ -11,9 +11,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.community.common.AuthProvider;
+import com.community.common.Authority;
 import com.community.exception.OAuth2AuthenticationProcessingException;
-import com.community.model.AuthProvider;
-import com.community.model.Authority;
 import com.community.model.domain.User;
 import com.community.repository.UserRepository;
 import com.community.security.CustomUserDetails;
@@ -58,25 +58,24 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 			}
 			user = updateExistingUser(user);
 		} else {
-			user = registerNewUser(registrationId, oAuthAttributes);
+			user = createNewUser(registrationId, oAuthAttributes);
 		}
+		
         return CustomUserDetails.create(user, oAuthAttributes.getAttributes());
 	}
 	
-	private User registerNewUser(String registrationId, OAuthAttributes oAuthAttributes) {
-		
-		User user = User.builder()
+	private User createNewUser(String registrationId, OAuthAttributes oAuthAttributes) {
+		return User.builder()
 					.id(oAuthAttributes.getEmail())
 					.name(oAuthAttributes.getName())
 					.status(true)
 					.authorities(Authority.ROLE_USER)
 					.provider(AuthProvider.valueOf(registrationId))
 					.build();
-        return userRepository.save(user);
     }
 	
 	private User updateExistingUser(User existingUser) {
-        existingUser.update();
+		existingUser.update();
         return userRepository.save(existingUser);
     }
 }

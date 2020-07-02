@@ -1,4 +1,4 @@
-package com.community.model;
+package com.community.common;
 
 public enum AuthProvider {
 	facebook,

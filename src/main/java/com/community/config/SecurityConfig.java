@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.community.security.CustomUserDetailsService;
+import com.community.security.jwt.JwtAuthenticationEntryPoint;
 import com.community.security.jwt.TokenAuthenticationFilter;
 import com.community.security.oauth2.CustomOAuth2UserService;
 import com.community.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -36,6 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private CustomOAuth2UserService customOAuth2UserService;
+	
+	@Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
 	
 	@Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -73,22 +77,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+		.httpBasic()
+			.disable()
 		.cors()
-			.and()
-		.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 		.csrf()
 			.disable()
+		.exceptionHandling()
+            .authenticationEntryPoint(unauthorizedHandler)
+            .and()
+		.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
 		.formLogin()
-			.disable()
-		.httpBasic()
 			.disable()
 		.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 		.authorizeRequests()
 			.antMatchers("/", "/login/**", "/error", "/favicon.ico", "/**/*.png","/**/*.gif","/**/*.svg", "/**/*.jpg","/**/*.html","/**/*.css","/**/*.js")
         	.permitAll()
-        	.antMatchers("/oauth2/**", "/api/authenticate/**", "/api/register", "/v2/**")
+        	.antMatchers("/oauth2/**","/auth/**", "/v2/**")
         	.permitAll()
         	.anyRequest().authenticated()
         	.and()
