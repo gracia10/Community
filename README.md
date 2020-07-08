@@ -3,9 +3,8 @@
 SpringBoot
 Gradle
 JPA
-
 OAuth2 - Social login
+JWT Authentication + Redis
 
 ++
-JWT - loaclstrorage -> cookie
 Mail validation check
