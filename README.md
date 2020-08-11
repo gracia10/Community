@@ -1,4 +1,4 @@
-# Community log
+# Social Login + JWT Authentication
 
 SpringBoot  
 Gradle   
