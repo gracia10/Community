@@ -6,6 +6,6 @@ JPA
 OAuth2 - Social login  
 JWT Authentication + Redis  
   
-++  Soon
+++  Soon  
 Mail validation check  
 login ontime mail check
